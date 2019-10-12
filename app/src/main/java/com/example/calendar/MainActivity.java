@@ -237,6 +237,7 @@ public class MainActivity extends BaseActivity implements
                 .setTextXOffset(0, 0, 0, 0, 0, 0)
                 .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
                 .setDividerColor(0xFF24AD9D)
+                .setDividerColor(Color.WHITE)//设置分割线的颜色
                 .build();
         // pvTime.setDate(Calendar.getInstance());//注：根据需求来决定是否使用该方法（一般是精确到秒的情况），此项可以在弹出选择器的时候重新设置当前时间，避免在初始化之后由于时间已经设定，导致选中时间与当前时间不匹配的问题。
 
@@ -245,7 +246,11 @@ public class MainActivity extends BaseActivity implements
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pvCustomTime.show();
+                //pvCustomTime.show();
+                Log.d("Cur",mCalendarView.getCurYear()+"");
+                Log.d("Cur",mCalendarView.getCurMonth()+"");
+                Log.d("Cur",mCalendarView.getCurDay()+"");
+                Log.d("SelectedCalendar",mCalendarView.getSelectedCalendar()+"");
             }
         });
     }
@@ -458,6 +463,8 @@ public class MainActivity extends BaseActivity implements
         Log.e("onDateSelected", "  " + mCalendarView.getSelectedCalendar().getScheme() +
                 "  --  " + mCalendarView.getSelectedCalendar().isCurrentDay());
         Log.e("干支年纪 ： ", " -- " + TrunkBranchAnnals.getTrunkBranchYear(calendar.getLunarCalendar().getYear()));
+
+
     }
 
     @Override
