@@ -17,6 +17,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.CustomListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
@@ -44,7 +46,9 @@ public class MainActivity extends BaseActivity implements
         CalendarView.OnYearViewChangeListener,
         DialogInterface.OnClickListener,
         View.OnClickListener {
-
+    public LocationClient mLocationClient = null;
+    private MyLocationListener myListener = new MyLocationListener();
+    LocationClientOption option = new LocationClientOption();
     TextView mTextMonthDay;
 
     TextView mTextYear;
@@ -70,6 +74,18 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
+    }
+
+    //定位相关服务
+    public void initLocation() {
+        mLocationClient = new LocationClient(getApplicationContext());
+        LocationClientOption option = new LocationClientOption();
+        option.setIsNeedAddress(true);
+     //可选，是否需要地址信息，默认为不需要，即参数为false
+     //如果开发者需要获得当前点的地址信息，此处必须为true
+        mLocationClient.setLocOption(option);
+        //声明LocationClient类
+        mLocationClient.registerLocationListener(myListener);
     }
 
     @SuppressLint("SetTextI18n")
@@ -191,7 +207,7 @@ public class MainActivity extends BaseActivity implements
         pvCustomTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {//选中事件回调
-               Toast.makeText(MainActivity.this,getTime(date),Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, getTime(date), Toast.LENGTH_SHORT).show();
             }
         })
                 /*.setType(TimePickerView.Type.ALL)//default is all
@@ -242,15 +258,14 @@ public class MainActivity extends BaseActivity implements
         // pvTime.setDate(Calendar.getInstance());//注：根据需求来决定是否使用该方法（一般是精确到秒的情况），此项可以在弹出选择器的时候重新设置当前时间，避免在初始化之后由于时间已经设定，导致选中时间与当前时间不匹配的问题。
 
 
-
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //pvCustomTime.show();
-                Log.d("Cur",mCalendarView.getCurYear()+"");
-                Log.d("Cur",mCalendarView.getCurMonth()+"");
-                Log.d("Cur",mCalendarView.getCurDay()+"");
-                Log.d("SelectedCalendar",mCalendarView.getSelectedCalendar()+"");
+                Log.d("Cur", mCalendarView.getCurYear() + "");
+                Log.d("Cur", mCalendarView.getCurMonth() + "");
+                Log.d("Cur", mCalendarView.getCurDay() + "");
+                Log.d("SelectedCalendar", mCalendarView.getSelectedCalendar() + "");
             }
         });
     }
