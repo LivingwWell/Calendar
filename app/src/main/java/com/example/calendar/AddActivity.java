@@ -1,7 +1,6 @@
 package com.example.calendar;
 
 import android.app.Activity;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,10 +15,8 @@ import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.CustomListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
-import com.example.calendar.Bean.DaoMaster;
-import com.example.calendar.Bean.DaoSession;
 import com.example.calendar.Bean.DataBean;
-import com.example.calendar.Bean.DataBeanDao;
+import com.example.calendar.application.CustomApplication;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,6 +25,7 @@ public class AddActivity extends Activity {
     TextView tvBegin, tvStop;
     EditText edTitle, edContext;
     TimePickerView pvCustomTime;
+
     private DbController mDbController;
     private DataBean dataBean;
     @Override
@@ -36,6 +34,8 @@ public class AddActivity extends Activity {
         setContentView(R.layout.activity_add);
         initView();
     }
+
+
 
     public void initView() {
         tvBegin = findViewById(R.id.textView_begin);
