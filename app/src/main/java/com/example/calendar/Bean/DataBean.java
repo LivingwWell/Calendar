@@ -14,11 +14,20 @@ public class DataBean {
     public String title;
     public String context;
     public String Calendar;
+    public boolean iscomplete;
 
-    
-    @Generated(hash = 1951719469)
-    public DataBean(long id, int year, int month, int day, String title,
-            String context, String Calendar) {
+    public DataBean(int year, int month, int day, String title, String context, String calendar) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.title = title;
+        this.context = context;
+        Calendar = calendar;
+    }
+
+    @Generated(hash = 1395337561)
+    public DataBean(long id, int year, int month, int day, String title, String context,
+            String Calendar, boolean iscomplete) {
         this.id = id;
         this.year = year;
         this.month = month;
@@ -26,7 +35,9 @@ public class DataBean {
         this.title = title;
         this.context = context;
         this.Calendar = Calendar;
+        this.iscomplete = iscomplete;
     }
+
     @Generated(hash = 908697775)
     public DataBean() {
     }
@@ -71,6 +82,22 @@ public class DataBean {
     }
     public void setCalendar(String Calendar) {
         this.Calendar = Calendar;
+    }
+
+    public boolean getIscomplete() {
+        return this.iscomplete;
+    }
+
+    public void setIscomplete(boolean iscomplete) {
+        this.iscomplete = iscomplete;
+    }
+
+    public boolean getIsComplete() {
+        return this.iscomplete;
+    }
+
+    public void setIsComplete(boolean isComplete) {
+        this.iscomplete = isComplete;
     }
 
 

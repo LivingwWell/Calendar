@@ -1,68 +1,37 @@
 package com.example.calendar;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.app.TimePickerDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.os.Bundle;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.bigkoo.pickerview.builder.TimePickerBuilder;
-import com.bigkoo.pickerview.listener.CustomListener;
-import com.bigkoo.pickerview.listener.OnTimeSelectListener;
-import com.bigkoo.pickerview.view.TimePickerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarLayout;
 import com.haibin.calendarview.CalendarView;
 import com.haibin.calendarview.TrunkBranchAnnals;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends BaseActivity implements
-        CalendarView.OnCalendarSelectListener,
-        CalendarView.OnCalendarLongClickListener,
-        CalendarView.OnMonthChangeListener,
-        CalendarView.OnYearChangeListener,
-        CalendarView.OnWeekChangeListener,
-        CalendarView.OnViewChangeListener,
-        CalendarView.OnCalendarInterceptListener,
-        CalendarView.OnYearViewChangeListener,
-        DialogInterface.OnClickListener,
-        View.OnClickListener {
-    public LocationClient mLocationClient = null;
-    private MyLocationListener myListener = new MyLocationListener();
-    LocationClientOption option = new LocationClientOption();
+        CalendarView.OnCalendarSelectListener, CalendarView.OnCalendarLongClickListener, CalendarView.OnMonthChangeListener, CalendarView.OnYearChangeListener,
+        CalendarView.OnWeekChangeListener, CalendarView.OnViewChangeListener, CalendarView.OnCalendarInterceptListener, CalendarView.OnYearViewChangeListener, DialogInterface.OnClickListener, View.OnClickListener {
+
     TextView mTextMonthDay;
-
     TextView mTextYear;
-
     TextView mTextLunar;
-
     TextView mTextCurrentDay;
-
-    TimePickerView pvCustomTime;
-
     CalendarView mCalendarView;
-
     RelativeLayout mRelativeTool;
-
     FloatingActionButton floatingActionButton;
     private int mYear;
     CalendarLayout mCalendarLayout;
@@ -74,18 +43,6 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
-    }
-
-    //定位相关服务
-    public void initLocation() {
-        mLocationClient = new LocationClient(getApplicationContext());
-        LocationClientOption option = new LocationClientOption();
-        option.setIsNeedAddress(true);
-     //可选，是否需要地址信息，默认为不需要，即参数为false
-     //如果开发者需要获得当前点的地址信息，此处必须为true
-        mLocationClient.setLocOption(option);
-        //声明LocationClient类
-        mLocationClient.registerLocationListener(myListener);
     }
 
     @SuppressLint("SetTextI18n")
@@ -200,61 +157,7 @@ public class MainActivity extends BaseActivity implements
         mTextLunar.setText("今日");
         mTextCurrentDay.setText(String.valueOf(mCalendarView.getCurDay()));
 
-        //时间选择器
-        /**
-         *  时间选择器 ，自定义布局
-         */
-        pvCustomTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
-            @Override
-            public void onTimeSelect(Date date, View v) {//选中事件回调
-                Toast.makeText(MainActivity.this, getTime(date), Toast.LENGTH_SHORT).show();
-            }
-        })
-                /*.setType(TimePickerView.Type.ALL)//default is all
-                .setCancelText("Cancel")
-                .setSubmitText("Sure")
-                .setContentTextSize(18)
-                .setTitleSize(20)
-                .setTitleText("Title")
-                .setTitleColor(Color.BLACK)
-               /*.setDividerColor(Color.WHITE)//设置分割线的颜色
-                .setTextColorCenter(Color.LTGRAY)//设置选中项的颜色
-                .setLineSpacingMultiplier(1.6f)//设置两横线之间的间隔倍数
-                .setTitleBgColor(Color.DKGRAY)//标题背景颜色 Night mode
-                .setBgColor(Color.BLACK)//滚轮背景颜色 Night mode
-                .setSubmitColor(Color.WHITE)
-                .setCancelColor(Color.WHITE)*/
-                /*.animGravity(Gravity.RIGHT)// default is center*/
-                .setTextColorCenter(Color.BLACK)//设置选中项的颜色
-                .setLayoutRes(R.layout.pickerview_custom_time, new CustomListener() {
-                    @Override
-                    public void customLayout(View v) {
-                        final TextView tvSubmit = (TextView) v.findViewById(R.id.tv_finish);
-                        TextView ivCancel = (TextView) v.findViewById(R.id.iv_cancel);
-                        tvSubmit.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                pvCustomTime.returnData();
-                                pvCustomTime.dismiss();
-                            }
-                        });
-                        ivCancel.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                pvCustomTime.dismiss();
-                            }
-                        });
-                    }
-                })
-                .setContentTextSize(24)
-                .setType(new boolean[]{false, false, true, true, true, false})
-                .setLabel("年", "月", "日", "时", "分", "秒")
-                .setLineSpacingMultiplier(1.5f)
-                .setTextXOffset(0, 0, 0, 0, 0, 0)
-                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
-                .setDividerColor(0xFF24AD9D)
-                .setDividerColor(Color.WHITE)//设置分割线的颜色
-                .build();
+
         // pvTime.setDate(Calendar.getInstance());//注：根据需求来决定是否使用该方法（一般是精确到秒的情况），此项可以在弹出选择器的时候重新设置当前时间，避免在初始化之后由于时间已经设定，导致选中时间与当前时间不匹配的问题。
 
 
@@ -266,6 +169,7 @@ public class MainActivity extends BaseActivity implements
                 Log.d("Cur", mCalendarView.getCurMonth() + "");
                 Log.d("Cur", mCalendarView.getCurDay() + "");
                 Log.d("SelectedCalendar", mCalendarView.getSelectedCalendar() + "");
+                startActivity(new Intent(MainActivity.this, AddActivity.class));
             }
         });
     }
@@ -557,9 +461,5 @@ public class MainActivity extends BaseActivity implements
         Log.e("onYearChange", " 年份变化 " + year);
     }
 
-    private String getTime(Date date) {//可根据需要自行截取数据显示
-        Log.d("getTime()", "choice date millis: " + date.getTime());
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return format.format(date);
-    }
+
 }

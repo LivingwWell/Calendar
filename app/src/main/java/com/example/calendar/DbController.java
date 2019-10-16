@@ -57,7 +57,7 @@ public class DbController {
      */
     public DbController(Context context) {
         this.context = context;
-        mHelper = new DaoMaster.DevOpenHelper(context,"person.db", null);
+        mHelper = new DaoMaster.DevOpenHelper(context,"calendar.db", null);
         mDaoMaster =new DaoMaster(getWritableDatabase());
         mDaoSession = mDaoMaster.newSession();
         dataBeanDao = mDaoSession.getDataBeanDao();
@@ -67,7 +67,7 @@ public class DbController {
      */
     private SQLiteDatabase getReadableDatabase(){
         if(mHelper == null){
-            mHelper = new DaoMaster.DevOpenHelper(context,"person.db",null);
+            mHelper = new DaoMaster.DevOpenHelper(context,"calendar.db",null);
         }
         SQLiteDatabase db =mHelper.getReadableDatabase();
         return db;

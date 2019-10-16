@@ -9,10 +9,6 @@ import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
