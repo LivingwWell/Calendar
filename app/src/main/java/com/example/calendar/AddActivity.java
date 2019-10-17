@@ -1,10 +1,15 @@
 package com.example.calendar;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -15,7 +20,7 @@ import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.CustomListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
-import com.example.calendar.Bean.DataBean;
+import com.example.calendar.Bean.DetailBean;
 import com.example.calendar.application.CustomApplication;
 
 import java.text.SimpleDateFormat;
@@ -25,9 +30,11 @@ public class AddActivity extends Activity {
     TextView tvBegin, tvStop;
     EditText edTitle, edContext;
     TimePickerView pvCustomTime;
-
+    Button button;
+    public Date detaiTime;
     private DbController mDbController;
-    private DataBean dataBean;
+    private DetailBean detailBean;
+    CalendarEvent calendarEvent;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,31 +43,41 @@ public class AddActivity extends Activity {
     }
 
 
-
     public void initView() {
         tvBegin = findViewById(R.id.textView_begin);
         tvStop = findViewById(R.id.textView_stop);
         edTitle = findViewById(R.id.editText_title);
         edContext = findViewById(R.id.editText_context);
+        button=findViewById(R.id.button);
         tvBegin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setData(tvBegin,"开始时间");
+                setData(tvBegin, "开始时间");
             }
         });
-
         tvStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setData(tvStop,"结束时间");
+                setData(tvStop, "结束时间");
+            }
+        });
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CalendarEvent calendarEvent = new CalendarEvent(
+                        "马上吃饭",
+                        "吃好吃的",
+                        "南信院二食堂",
+                        System.currentTimeMillis(),
+                        System.currentTimeMillis() + 60000,
+                        0, null
+                );
             }
         });
     }
 
     private void getStuDao() {
-        // 创建数据
-        DataBean dataBean=new DataBean();
-        CustomApplication.getmDaoSession().getDataBeanDao().save(dataBean);
+
     }
 
     private String getTime(Date date) {//可根据需要自行截取数据显示
@@ -77,6 +94,7 @@ public class AddActivity extends Activity {
             @Override
             public void onTimeSelect(Date date, View v) {//选中事件回调
                 textView.setText(text + getTime(date));
+                detaiTime=date;
             }
         }).setTextColorCenter(Color.BLACK)//设置选中项的颜色
                 .setLayoutRes(R.layout.pickerview_custom_time, new CustomListener() {
@@ -110,5 +128,7 @@ public class AddActivity extends Activity {
                 .build();
         pvCustomTime.show();
     }
+
+
 
 }

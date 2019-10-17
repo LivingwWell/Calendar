@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity implements
         CalendarView.OnCalendarSelectListener, CalendarView.OnCalendarLongClickListener, CalendarView.OnMonthChangeListener, CalendarView.OnYearChangeListener,
         CalendarView.OnWeekChangeListener, CalendarView.OnViewChangeListener, CalendarView.OnCalendarInterceptListener, CalendarView.OnYearViewChangeListener, DialogInterface.OnClickListener, View.OnClickListener {
 
-    TextView mTextMonthDay, mTextYear, mTextLunar, mTextCurrentDay,textView5;
+    TextView mTextMonthDay, mTextYear, mTextLunar, mTextCurrentDay;
     CalendarView mCalendarView;
     RelativeLayout mRelativeTool;
     FloatingActionButton floatingActionButton;
@@ -106,7 +106,6 @@ public class MainActivity extends BaseActivity implements
         mTextMonthDay = findViewById(R.id.tv_month_day);
         mTextYear = findViewById(R.id.tv_year);
         mTextLunar = findViewById(R.id.tv_lunar);
-        textView5=findViewById(R.id.textView5);
         floatingActionButton = findViewById(R.id.floatingActionButton3);
         mRelativeTool = findViewById(R.id.rl_tool);
         mCalendarView = findViewById(R.id.calendarView);
@@ -154,28 +153,6 @@ public class MainActivity extends BaseActivity implements
                                 break;
                             case 3:
                                 mCalendarView.scrollToNext(false);
-                                break;
-                            case 4:
-                                //mCalendarView.scrollToCurrent(true);
-                                mCalendarView.scrollToCalendar(2018, 12, 30);
-                                break;
-                            case 5:
-                                mCalendarView.setRange(2018, 7, 1, 2019, 4, 28);
-//                                mCalendarView.setRange(mCalendarView.getCurYear(), mCalendarView.getCurMonth(), 6,
-//                                        mCalendarView.getCurYear(), mCalendarView.getCurMonth(), 23);
-                                break;
-                            case 6:
-                                Log.e("scheme", "  " + mCalendarView.getSelectedCalendar().getScheme() + "  --  "
-                                        + mCalendarView.getSelectedCalendar().isCurrentDay());
-                                List<Calendar> weekCalendars = mCalendarView.getCurrentWeekCalendars();
-                                for (Calendar calendar : weekCalendars) {
-                                    Log.e("onWeekChange", calendar.toString() + "  --  " + calendar.getScheme());
-                                }
-                                new AlertDialog.Builder(MainActivity.this)
-                                        .setMessage(String.format("Calendar Range: \n%s —— %s",
-                                                mCalendarView.getMinRangeCalendar(),
-                                                mCalendarView.getMaxRangeCalendar()))
-                                        .show();
                                 break;
                         }
                     }
@@ -246,6 +223,14 @@ public class MainActivity extends BaseActivity implements
         }
         locationService.start();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        onStop();
+        Log.e("MainActivity","onDestroy");
+    }
+
     //关闭定位服务
     protected void onStop() {
         // TODO Auto-generated method stub
@@ -261,66 +246,14 @@ public class MainActivity extends BaseActivity implements
         final int month = mCalendarView.getCurMonth();
 
         Map<String, Calendar> map = new HashMap<>();
-//        for (int y = 1997; y < 2082; y++) {
-//        for (int m = 1; m <= 12; m++) {
-//        map.put(getSchemeCalendar(y, m, 1, 0xFF40db25, "假").toString(),
-//        getSchemeCalendar(y, m, 1, 0xFF40db25, "假"));
-//        map.put(getSchemeCalendar(y, m, 2, 0xFFe69138, "游").toString(),
-//        getSchemeCalendar(y, m, 2, 0xFFe69138, "游"));
-//        map.put(getSchemeCalendar(y, m, 3, 0xFFdf1356, "事").toString(),
-//        getSchemeCalendar(y, m, 3, 0xFFdf1356, "事"));
-//        map.put(getSchemeCalendar(y, m, 4, 0xFFaacc44, "车").toString(),
-//        getSchemeCalendar(y, m, 4, 0xFFaacc44, "车"));
-//        map.put(getSchemeCalendar(y, m, 5, 0xFFbc13f0, "驾").toString(),
-//        getSchemeCalendar(y, m, 5, 0xFFbc13f0, "驾"));
-//        map.put(getSchemeCalendar(y, m, 6, 0xFF542261, "记").toString(),
-//        getSchemeCalendar(y, m, 6, 0xFF542261, "记"));
-//        map.put(getSchemeCalendar(y, m, 7, 0xFF4a4bd2, "会").toString(),
-//        getSchemeCalendar(y, m, 7, 0xFF4a4bd2, "会"));
-//        map.put(getSchemeCalendar(y, m, 8, 0xFFe69138, "车").toString(),
-//        getSchemeCalendar(y, m, 8, 0xFFe69138, "车"));
-//        map.put(getSchemeCalendar(y, m, 9, 0xFF542261, "考").toString(),
-//        getSchemeCalendar(y, m, 9, 0xFF542261, "考"));
-//        map.put(getSchemeCalendar(y, m, 10, 0xFF87af5a, "记").toString(),
-//        getSchemeCalendar(y, m, 10, 0xFF87af5a, "记"));
-//        map.put(getSchemeCalendar(y, m, 11, 0xFF40db25, "会").toString(),
-//        getSchemeCalendar(y, m, 11, 0xFF40db25, "会"));
-//        map.put(getSchemeCalendar(y, m, 12, 0xFFcda1af, "游").toString(),
-//        getSchemeCalendar(y, m, 12, 0xFFcda1af, "游"));
-//        map.put(getSchemeCalendar(y, m, 13, 0xFF95af1a, "事").toString(),
-//        getSchemeCalendar(y, m, 13, 0xFF95af1a, "事"));
-//        map.put(getSchemeCalendar(y, m, 14, 0xFF33aadd, "学").toString(),
-//        getSchemeCalendar(y, m, 14, 0xFF33aadd, "学"));
-//        map.put(getSchemeCalendar(y, m, 15, 0xFF1aff1a, "码").toString(),
-//        getSchemeCalendar(y, m, 15, 0xFF1aff1a, "码"));
-//        map.put(getSchemeCalendar(y, m, 16, 0xFF22acaf, "驾").toString(),
-//        getSchemeCalendar(y, m, 16, 0xFF22acaf, "驾"));
-//        map.put(getSchemeCalendar(y, m, 17, 0xFF99a6fa, "校").toString(),
-//        getSchemeCalendar(y, m, 17, 0xFF99a6fa, "校"));
-//        map.put(getSchemeCalendar(y, m, 18, 0xFFe69138, "车").toString(),
-//        getSchemeCalendar(y, m, 18, 0xFFe69138, "车"));
-//        map.put(getSchemeCalendar(y, m, 19, 0xFF40db25, "码").toString(),
-//        getSchemeCalendar(y, m, 19, 0xFF40db25, "码"));
-//        map.put(getSchemeCalendar(y, m, 20, 0xFFe69138, "火").toString(),
-//        getSchemeCalendar(y, m, 20, 0xFFe69138, "火"));
-//        map.put(getSchemeCalendar(y, m, 21, 0xFF40db25, "假").toString(),
-//        getSchemeCalendar(y, m, 21, 0xFF40db25, "假"));
-//        map.put(getSchemeCalendar(y, m, 22, 0xFF99a6fa, "记").toString(),
-//        getSchemeCalendar(y, m, 22, 0xFF99a6fa, "记"));
-//        map.put(getSchemeCalendar(y, m, 23, 0xFF33aadd, "假").toString(),
-//        getSchemeCalendar(y, m, 23, 0xFF33aadd, "假"));
-//        map.put(getSchemeCalendar(y, m, 24, 0xFF40db25, "校").toString(),
-//        getSchemeCalendar(y, m, 24, 0xFF40db25, "校"));
-//        map.put(getSchemeCalendar(y, m, 25, 0xFF1aff1a, "假").toString(),
-//        getSchemeCalendar(y, m, 25, 0xFF1aff1a, "假"));
-//        map.put(getSchemeCalendar(y, m, 26, 0xFF40db25, "议").toString(),
-//        getSchemeCalendar(y, m, 26, 0xFF40db25, "议"));
-//        map.put(getSchemeCalendar(y, m, 27, 0xFF95af1a, "假").toString(),
-//        getSchemeCalendar(y, m, 27, 0xFF95af1a, "假"));
-//        map.put(getSchemeCalendar(y, m, 28, 0xFF40db25, "码").toString(),
-//        getSchemeCalendar(y, m, 28, 0xFF40db25, "码"));
-//        }
-//        }
+        for (int y = 1997; y < 2082; y++) {
+        for (int m = 1; m <= 12; m++) {
+        map.put(getSchemeCalendar(y, m, 1, 0xFF40db25, "假").toString(),
+        getSchemeCalendar(y, m, 1, 0xFF40db25, "假"));
+        map.put(getSchemeCalendar(y, m, 9, 0xFF542261, "考").toString(),
+        getSchemeCalendar(y, m, 9, 0xFF542261, "考"));
+         }
+        }
 
         //28560 数据量增长不会影响UI响应速度，请使用这个API替换
         mCalendarView.setSchemeDate(map);
@@ -558,7 +491,7 @@ public class MainActivity extends BaseActivity implements
             if (null != location && location.getLocType() != BDLocation.TypeServerError) {
                 int tag = 1;
                 StringBuffer sb = new StringBuffer(256);
-
+                handler.postDelayed(runnable, TIME); //每隔1s执行
                 sb.append("\ncitycode : ");// 城市编码
                 sb.append(location.getCityCode());
                 sb.append("\ncity : ");// 城市
@@ -655,8 +588,7 @@ public class MainActivity extends BaseActivity implements
                     @Override
                     public void run() {
                         if (tag == Utils.RECEIVE_TAG) {
-                            handler.postDelayed(runnable, TIME); //每隔1s执行
-                            Log.d("LocationResult",str+"定位时长"+Showtime);
+                            Log.d("LocationResult",str);
                         } else if (tag == Utils.DIAGNOSTIC_TAG) {
                             Log.d("LocationDiagnostic",str);
                         }
@@ -670,15 +602,12 @@ public class MainActivity extends BaseActivity implements
 
     Handler handler = new Handler();
     Runnable runnable = new Runnable() {
-
         @Override
         public void run() {
             // handler自带方法实现定时器
             try {
                 handler.postDelayed(this, TIME);
-                textView5.setText(Integer.toString(i++));
-                Showtime=Integer.toString(i++);
-                System.out.println("do...");
+                System.out.println("do..."+ ConvertorTime.secToTime(i++));
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

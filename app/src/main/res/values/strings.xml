@@ -3,14 +3,10 @@
 
 
     <string-array name="list_dialog_items">
-        <item>Change week start with sun</item>
-        <item>Change week start with mon</item>
-        <item>Change week start with sat</item>
-        <item>Change select mode：single/default</item>
-        <item>Change month and week view with CustomView</item>
-        <item>MonthViewShowMode：all</item>
-        <item>MonthViewShowMode：only_current</item>
-        <item>MonthViewShowMode：fix</item>
+        <item>周日为周起始</item>
+        <item>周一为周起始</item>
+        <item>周六为周起始</item>
+
     </string-array>
 
     <string-array name="func_dialog_items">
@@ -18,9 +14,6 @@
         <item>收缩日历布局</item>
         <item>上一页</item>
         <item>下一页</item>
-        <item>返回今天</item>
-        <item>限制日期范围</item>
-        <item>显示日期范围</item>
     </string-array>
 
     <string name="func_dialog_title">功能支持</string>

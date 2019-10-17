@@ -5,8 +5,8 @@ import android.app.Service;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Vibrator;
 
-import com.example.calendar.Bean.DaoMaster;
-import com.example.calendar.Bean.DaoSession;
+import com.example.calendar.greendao.DaoMaster;
+import com.example.calendar.greendao.DaoSession;
 import com.example.calendar.service.LocationService;
 
 public class CustomApplication extends Application {
