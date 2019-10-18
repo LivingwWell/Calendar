@@ -7,8 +7,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
 import com.example.calendar.R;
 
 public class StatisticsActivity extends Activity {
@@ -18,16 +16,30 @@ public class StatisticsActivity extends Activity {
         setContentView(R.layout.activity_statistics);
         Intent intent=getIntent();
         String address=intent.getStringExtra("addrStr");
+        String location1=intent.getStringExtra("location1");
+        String location2=intent.getStringExtra("location2");
+        String date1=intent.getStringExtra("date1");
+        String date2=intent.getStringExtra("date2");
         TextView addrStr=findViewById(R.id.location);
-        TextView location1=findViewById(R.id.location1);
-        TextView location2=findViewById(R.id.location2);
-        TextView date1=findViewById(R.id.date1);
-        TextView date2=findViewById(R.id.date2);
+        TextView tvlocation1=findViewById(R.id.location1);
+        TextView tvlocation2=findViewById(R.id.location2);
+        TextView tvdate1=findViewById(R.id.date1);
+        TextView tvdate2=findViewById(R.id.date2);
         addrStr.setText("当前位置："+address);
-        location1.setText("常用地点一：");
-        location2.setText("常用地点二：");
-        date1.setText("累计时长：");
-        date2.setText("累计时长：");
+        if (location1==null){
+            tvlocation1.setText("常用地点一:未设置");
+        }else {
+            tvlocation1.setText("常用地点一："+location1);
+        }
+
+        if (location2==null){
+            tvlocation2.setText("常用地点二:未设置");
+        }else {
+            tvlocation2.setText("常用地点二："+location2);
+        }
+
+        tvdate1.setText("累计时长："+date1);
+        tvdate2.setText("累计时长："+date2);
 
 
     }

@@ -57,6 +57,8 @@ public class MainActivity extends BaseActivity implements
     private String permissionInfo;
     private LocationService locationService;
     public String addrStr;
+    public String setlocation1="中国广东省广州市白云区鹤龙街道南边南街7号";
+    public String setlocation2="中国广东省广州市白云区鹤龙街道南边南街7号";
     public String location1;
     public String location2;
     public String date1;
@@ -176,6 +178,10 @@ public class MainActivity extends BaseActivity implements
                                 Intent intent=new Intent(MainActivity.this, StatisticsActivity.class);
                                 Bundle bundle=new Bundle();
                                 bundle.putString("addrStr",addrStr);
+                                bundle.putString("location1",setlocation1);
+                                bundle.putString("location2",setlocation2);
+                                bundle.putString("date1",date1);
+                                bundle.putString("date2",date2);
                                 intent.putExtras(bundle);
                                 startActivity(intent,bundle);
                         }
@@ -226,6 +232,10 @@ public class MainActivity extends BaseActivity implements
                 Log.d("SelectedCalendar", mCalendarView.getSelectedCalendar() + "");
                 Bundle bundle = new Bundle();
                 bundle.putString("addrStr", addrStr);
+                bundle.putString("location1", location1);
+                bundle.putString("location2", location2);
+                bundle.putString("date1", date1);
+                bundle.putString("date2", date2);
                 startActivity(new Intent(MainActivity.this, AddActivity.class).putExtras(bundle));
             }
         });
@@ -546,6 +556,8 @@ public class MainActivity extends BaseActivity implements
                 }
                 logMsg(sb.toString(), tag);
                 addrStr = location.getAddrStr();
+                location1=location.getAddrStr();
+                location2=location.getAddrStr();
             }
 
 
@@ -634,6 +646,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     Handler handler = new Handler();
+
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
@@ -641,6 +654,12 @@ public class MainActivity extends BaseActivity implements
             try {
                 handler.postDelayed(this, TIME);
                 System.out.println("do..." + ConvertorTime.secToTime(i++));
+                if (setlocation1.equals(location1)){
+                    date1=ConvertorTime.secToTime(i++);
+                }
+                if (setlocation2.equals(location2)){
+                    date2=ConvertorTime.secToTime(i++);
+                }
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -648,4 +667,5 @@ public class MainActivity extends BaseActivity implements
             }
         }
     };
+
 }
