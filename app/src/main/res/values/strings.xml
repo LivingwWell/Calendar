@@ -2,6 +2,10 @@
     <string name="app_name">Calendar</string>
 
 
+    <string name="func_dialog_title">功能支持</string>
+
+    <string name="list_dialog_title">动态更新</string>
+
     <string-array name="list_dialog_items">
         <item>周日为周起始</item>
         <item>周一为周起始</item>
@@ -14,9 +18,6 @@
         <item>收缩日历布局</item>
         <item>上一页</item>
         <item>下一页</item>
+        <item>定位统计</item>
     </string-array>
-
-    <string name="func_dialog_title">功能支持</string>
-
-    <string name="list_dialog_title">动态更新</string>
 </resources>

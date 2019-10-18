@@ -1,14 +1,18 @@
 package com.example.calendar;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
+import android.provider.CalendarContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +24,7 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.Poi;
 import com.baidu.location.PoiRegion;
+import com.example.calendar.Bean.DetailBean;
 import com.example.calendar.application.CustomApplication;
 import com.example.calendar.service.LocationService;
 import com.example.calendar.service.Utils;
@@ -44,12 +49,13 @@ public class MainActivity extends BaseActivity implements
     CalendarView mCalendarView;
     RelativeLayout mRelativeTool;
     FloatingActionButton floatingActionButton;
+    RecyclerView recyclerView;
     private int mYear;
     CalendarLayout mCalendarLayout;
     private AlertDialog mMoreDialog, mFuncDialog;
     private String permissionInfo;
     private LocationService locationService;
-    public String Showtime;
+    public String showTime, addrStr;
     private int i = 0;
     private int TIME = 1000;
 
@@ -110,6 +116,11 @@ public class MainActivity extends BaseActivity implements
         mRelativeTool = findViewById(R.id.rl_tool);
         mCalendarView = findViewById(R.id.calendarView);
         mTextCurrentDay = findViewById(R.id.tv_current_day);
+        recyclerView = findViewById(R.id.recyclerView);
+        List<DetailBean> detailBeans = new ArrayList<>();
+
+
+        recyclerView.setAdapter(new DetailAdpter(detailBeans));
         mTextMonthDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -200,7 +211,9 @@ public class MainActivity extends BaseActivity implements
                 Log.d("Cur", mCalendarView.getCurMonth() + "");
                 Log.d("Cur", mCalendarView.getCurDay() + "");
                 Log.d("SelectedCalendar", mCalendarView.getSelectedCalendar() + "");
-                startActivity(new Intent(MainActivity.this, AddActivity.class));
+                Bundle bundle = new Bundle();
+                bundle.putString("addrStr", addrStr);
+                startActivity(new Intent(MainActivity.this, AddActivity.class).putExtras(bundle));
             }
         });
     }
@@ -228,7 +241,7 @@ public class MainActivity extends BaseActivity implements
     protected void onDestroy() {
         super.onDestroy();
         onStop();
-        Log.e("MainActivity","onDestroy");
+        Log.e("MainActivity", "onDestroy");
     }
 
     //关闭定位服务
@@ -238,6 +251,7 @@ public class MainActivity extends BaseActivity implements
         locationService.stop(); //停止定位服务
         super.onStop();
     }
+
     @SuppressWarnings("unused")
     @Override
     protected void initData() {
@@ -247,12 +261,12 @@ public class MainActivity extends BaseActivity implements
 
         Map<String, Calendar> map = new HashMap<>();
         for (int y = 1997; y < 2082; y++) {
-        for (int m = 1; m <= 12; m++) {
-        map.put(getSchemeCalendar(y, m, 1, 0xFF40db25, "假").toString(),
-        getSchemeCalendar(y, m, 1, 0xFF40db25, "假"));
-        map.put(getSchemeCalendar(y, m, 9, 0xFF542261, "考").toString(),
-        getSchemeCalendar(y, m, 9, 0xFF542261, "考"));
-         }
+            for (int m = 1; m <= 12; m++) {
+                map.put(getSchemeCalendar(y, m, 1, 0xFF40db25, "假").toString(),
+                        getSchemeCalendar(y, m, 1, 0xFF40db25, "假"));
+                map.put(getSchemeCalendar(y, m, 9, 0xFF542261, "考").toString(),
+                        getSchemeCalendar(y, m, 9, 0xFF542261, "考"));
+            }
         }
 
         //28560 数据量增长不会影响UI响应速度，请使用这个API替换
@@ -356,6 +370,7 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
+    //标记颜色
     private Calendar getSchemeCalendar(int year, int month, int day, int color, String text) {
         Calendar calendar = new Calendar();
         calendar.setYear(year);
@@ -517,7 +532,10 @@ public class MainActivity extends BaseActivity implements
                     sb.append("gps定位成功");
                 }
                 logMsg(sb.toString(), tag);
+                addrStr = location.getAddrStr();
             }
+
+
         }
 
         @Override
@@ -574,8 +592,10 @@ public class MainActivity extends BaseActivity implements
                 }
             }
             logMsg(sb.toString(), tag);
+
         }
     };
+
     /**
      * 显示请求字符串
      *
@@ -584,16 +604,16 @@ public class MainActivity extends BaseActivity implements
     public void logMsg(final String str, final int tag) {
 
         try {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (tag == Utils.RECEIVE_TAG) {
-                            Log.d("LocationResult",str);
-                        } else if (tag == Utils.DIAGNOSTIC_TAG) {
-                            Log.d("LocationDiagnostic",str);
-                        }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (tag == Utils.RECEIVE_TAG) {
+                        Log.d("LocationResult", str);
+                    } else if (tag == Utils.DIAGNOSTIC_TAG) {
+                        Log.d("LocationDiagnostic", str);
                     }
-                }).start();
+                }
+            }).start();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -607,7 +627,7 @@ public class MainActivity extends BaseActivity implements
             // handler自带方法实现定时器
             try {
                 handler.postDelayed(this, TIME);
-                System.out.println("do..."+ ConvertorTime.secToTime(i++));
+                System.out.println("do..." + ConvertorTime.secToTime(i++));
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

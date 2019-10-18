@@ -1,6 +1,4 @@
-package com.example.calendar;
-
-import android.support.annotation.NonNull;
+package com.example.calendar.Util;
 
 import java.util.List;
 
@@ -39,8 +37,6 @@ public class CalendarEvent {
     private String rDate;
     private int hasAttendeeData;
     private int lastDate;
-    private String organizer;
-    private String isOrganizer;
 
 
     // ----------------------------------------------------------------------------------------
@@ -249,21 +245,6 @@ public class CalendarEvent {
         this.lastDate = lastDate;
     }
 
-    public String getOrganizer() {
-        return organizer;
-    }
-
-    void setOrganizer(String organizer) {
-        this.organizer = organizer;
-    }
-
-    public String getIsOrganizer() {
-        return isOrganizer;
-    }
-
-    void setIsOrganizer(String isOrganizer) {
-        this.isOrganizer = isOrganizer;
-    }
 
     public List<EventReminders> getReminders() {
         return reminders;
@@ -296,8 +277,6 @@ public class CalendarEvent {
                 "\n rDate='" + rDate + '\'' +
                 "\n hasAttendeeData=" + hasAttendeeData +
                 "\n lastDate=" + lastDate +
-                "\n organizer='" + organizer + '\'' +
-                "\n isOrganizer='" + isOrganizer + '\'' +
                 "\n reminders=" + reminders +
                 '}';
     }

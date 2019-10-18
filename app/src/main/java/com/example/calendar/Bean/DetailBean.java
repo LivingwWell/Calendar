@@ -1,20 +1,16 @@
 package com.example.calendar.Bean;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Generated;
 
-@Entity
+
 public class DetailBean {
-    @Id(autoincrement = true)//设置自增长
+
     public long id;
-    public String title;
-    @Generated(hash = 406118991)
-    public DetailBean(long id, String title) {
-        this.id = id;
-        this.title = title;
-    }
-    @Generated(hash = 610650804)
+    public String title;//标题
+    public String eventLocation;//地点
+    public int duration;//描述
+    public boolean isComplete;//是否完成
+
+
     public DetailBean() {
     }
     public long getId() {
@@ -30,4 +26,27 @@ public class DetailBean {
         this.title = title;
     }
 
+    public String getEventLocation() {
+        return eventLocation;
+    }
+
+    public void setEventLocation(String eventLocation) {
+        this.eventLocation = eventLocation;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    public void setComplete(boolean complete) {
+        isComplete = complete;
+    }
 }
