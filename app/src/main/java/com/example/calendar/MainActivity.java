@@ -25,6 +25,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.Poi;
 import com.baidu.location.PoiRegion;
 import com.example.calendar.Bean.DetailBean;
+import com.example.calendar.Location.StatisticsActivity;
 import com.example.calendar.application.CustomApplication;
 import com.example.calendar.service.LocationService;
 import com.example.calendar.service.Utils;
@@ -55,7 +56,11 @@ public class MainActivity extends BaseActivity implements
     private AlertDialog mMoreDialog, mFuncDialog;
     private String permissionInfo;
     private LocationService locationService;
-    public String showTime, addrStr;
+    public String addrStr;
+    public String location1;
+    public String location2;
+    public String date1;
+    public String date2;
     private int i = 0;
     private int TIME = 1000;
 
@@ -78,6 +83,8 @@ public class MainActivity extends BaseActivity implements
             if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
             }
+            permissions.add(Manifest.permission.READ_CALENDAR);
+            permissions.add(Manifest.permission.WRITE_CALENDAR);
             /*
              * 读写权限和电话状态权限非必要权限(建议授予)只会申请一次，用户同意或者禁止，只会弹一次
              */
@@ -165,6 +172,12 @@ public class MainActivity extends BaseActivity implements
                             case 3:
                                 mCalendarView.scrollToNext(false);
                                 break;
+                            case 4:
+                                Intent intent=new Intent(MainActivity.this, StatisticsActivity.class);
+                                Bundle bundle=new Bundle();
+                                bundle.putString("addrStr",addrStr);
+                                intent.putExtras(bundle);
+                                startActivity(intent,bundle);
                         }
                     }
                 };

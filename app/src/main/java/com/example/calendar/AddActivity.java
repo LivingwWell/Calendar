@@ -19,7 +19,7 @@ import com.bigkoo.pickerview.listener.CustomListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.example.calendar.Bean.DetailBean;
-import com.example.calendar.Util.CalendarEvent;
+
 import com.example.calendar.Util.CalendarProviderManager;
 
 import java.text.SimpleDateFormat;
