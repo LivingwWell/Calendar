@@ -37,6 +37,7 @@ import static com.example.calendar.Util.TimerUtil.checkContextNull;
  */
 public class CalendarProviderManager {
 
+    private static final String TAG = CalendarProviderManager.class.getName();
     private static StringBuilder builder = new StringBuilder();
 
 
@@ -607,7 +608,9 @@ public class CalendarProviderManager {
      */
     public static List<CalendarEvent> queryAccountEvent(Context context, Long startTime) {
         checkContextNull(context);
-
+        if(startTime == null  || startTime == 0 ){
+            startTime = System.currentTimeMillis();
+        }
         final String[] EVENT_PROJECTION = new String[]{
                 CalendarContract.Events.CALENDAR_ID,             // 在表中的列索引0
                 CalendarContract.Events.TITLE,                   // 在表中的列索引1
@@ -636,9 +639,18 @@ public class CalendarProviderManager {
         // 事件匹配
         Uri uri = CalendarContract.Events.CONTENT_URI;
         Uri uri2 = CalendarContract.Reminders.CONTENT_URI;
-        String[] returnColumns = {CalendarContract.Events.TITLE, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND};
+//        String[] returnColumns = {CalendarContract.Events.TITLE, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND};
         String selection = "((" + CalendarContract.Events.DTSTART + " >= ?)) AND (" + CalendarContract.Events.DTEND + " <= ?)";
-        long endtime = startTime + 86400;
+        //开始时间  结束时间计算
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+        startTime = calendar.getTimeInMillis();
+        calendar.set(Calendar.DATE,calendar.get(Calendar.DATE)+1);
+        long endtime = calendar.getTimeInMillis();
         String[] args = {String.valueOf(startTime), String.valueOf(endtime)};
         @SuppressLint("MissingPermission")
         Cursor cursor = context.getContentResolver().query(uri, EVENT_PROJECTION, selection, args, null);
@@ -728,6 +740,7 @@ public class CalendarProviderManager {
             } while (cursor.moveToNext());
             cursor.close();
         }
+        Log.d(TAG, "queryAccountEvent: result:"+result.size());
         //KLog.e("result",result);
         return result;
     }

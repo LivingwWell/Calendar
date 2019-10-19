@@ -1,6 +1,7 @@
 package com.example.calendar;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
@@ -134,6 +135,7 @@ public class MainActivity extends BaseActivity implements
         mCalendarView = findViewById(R.id.calendarView);
         mTextCurrentDay = findViewById(R.id.tv_current_day);
         recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         CalendarQuery();
         mTextMonthDay.setOnClickListener(new View.OnClickListener() {
             @Override
