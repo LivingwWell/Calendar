@@ -638,7 +638,6 @@ public class MainActivity extends BaseActivity implements
             // handler自带方法实现定时器
             try {
                 handler.postDelayed(this, TIME);
-                //System.out.println("do..." + ConvertorTime.secToTime(i++));
                 if (setlocation1.equals(location1)) {
                     //date1 = SPUtils.getInstance().getInt(location1);
                     date1 = i++;
