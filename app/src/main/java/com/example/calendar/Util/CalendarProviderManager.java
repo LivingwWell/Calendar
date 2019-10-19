@@ -1,5 +1,8 @@
 package com.example.calendar.Util;
+
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,12 +13,16 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.CalendarContract;
+import android.util.Log;
 
 import com.example.calendar.CalendarEvent;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+
 import static com.example.calendar.Util.TimerUtil.checkContextNull;
 
 
@@ -598,7 +605,7 @@ public class CalendarProviderManager {
      *
      * @return If failed return null else return List<CalendarEvent>
      */
-    public static List<CalendarEvent> queryAccountEvent(Context context, long calID) {
+    public static List<CalendarEvent> queryAccountEvent(Context context, Long startTime) {
         checkContextNull(context);
 
         final String[] EVENT_PROJECTION = new String[]{
@@ -629,32 +636,16 @@ public class CalendarProviderManager {
         // 事件匹配
         Uri uri = CalendarContract.Events.CONTENT_URI;
         Uri uri2 = CalendarContract.Reminders.CONTENT_URI;
+        String[] returnColumns = {CalendarContract.Events.TITLE, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND};
+        String selection = "((" + CalendarContract.Events.DTSTART + " >= ?)) AND (" + CalendarContract.Events.DTEND + " <= ?)";
+        long endtime = startTime + 86400;
+        String[] args = {String.valueOf(startTime), String.valueOf(endtime)};
+        @SuppressLint("MissingPermission")
+        Cursor cursor = context.getContentResolver().query(uri, EVENT_PROJECTION, selection, args, null);
 
-        String selection = "(" + CalendarContract.Events.CALENDAR_ID + " = ?)";
-        String[] selectionArgs = new String[]{String.valueOf(calID)};
-
-        Cursor cursor;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (PackageManager.PERMISSION_GRANTED == context.checkSelfPermission(
-                    "android.permission.READ_CALENDAR")) {
-                cursor = context.getContentResolver().query(uri, EVENT_PROJECTION, selection,
-                        selectionArgs, null);
-            } else {
-                return null;
-            }
-        } else {
-            cursor = context.getContentResolver().query(uri, EVENT_PROJECTION, selection,
-                    selectionArgs, null);
-        }
-
-        if (null == cursor) {
-            return null;
-        }
 
         // 查询结果
         List<CalendarEvent> result = new ArrayList<>();
-
         // 开始查询数据
         if (cursor.moveToFirst()) {
             do {
@@ -702,7 +693,6 @@ public class CalendarProviderManager {
                         CalendarContract.Events.LAST_DATE)));
 
 
-
                 // ----------------------- 开始查询事件提醒 ------------------------------
                 String[] REMINDER_PROJECTION = new String[]{
                         CalendarContract.Reminders._ID,                     // 在表中的列索引0
@@ -713,7 +703,8 @@ public class CalendarProviderManager {
                 String selection2 = "(" + CalendarContract.Reminders.EVENT_ID + " = ?)";
                 String[] selectionArgs2 = new String[]{String.valueOf(calendarEvent.getId())};
 
-                try (Cursor reminderCursor = context.getContentResolver().query(uri2, REMINDER_PROJECTION,
+                try (@SuppressLint("MissingPermission")
+                     Cursor reminderCursor = context.getContentResolver().query(uri2, REMINDER_PROJECTION,
                         selection2, selectionArgs2, null)) {
                     if (null != reminderCursor) {
                         if (reminderCursor.moveToFirst()) {
@@ -737,7 +728,7 @@ public class CalendarProviderManager {
             } while (cursor.moveToNext());
             cursor.close();
         }
-
+        //KLog.e("result",result);
         return result;
     }
 

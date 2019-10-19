@@ -8,14 +8,14 @@ import com.example.calendar.Bean.DetailBean;
 
 import java.util.List;
 
-public class DetailAdpter extends BaseQuickAdapter<DetailBean, BaseViewHolder> {
+public class DetailAdpter extends BaseQuickAdapter<CalendarEvent, BaseViewHolder> {
 
-    public DetailAdpter(@Nullable List<DetailBean> data) {
+    public DetailAdpter(@Nullable List<CalendarEvent> data) {
         super(R.layout.item_note, data);
     }
 
         @Override
-        protected void convert(BaseViewHolder helper, DetailBean item) {
+        protected void convert(BaseViewHolder helper, CalendarEvent item) {
         helper.setText(R.id.item_title,item.getTitle());
 
     }

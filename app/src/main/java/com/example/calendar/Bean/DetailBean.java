@@ -9,6 +9,9 @@ public class DetailBean {
     public String eventLocation;//地点
     public int duration;//描述
     public boolean isComplete;//是否完成
+    public long startTime;
+    public long endTime;
+
 
 
     public DetailBean() {

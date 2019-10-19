@@ -5,10 +5,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +19,7 @@ import android.provider.CalendarContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +29,10 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.Poi;
 import com.baidu.location.PoiRegion;
 import com.example.calendar.Bean.DetailBean;
+import com.example.calendar.Util.CalendarProviderManager;
 import com.example.calendar.Location.StatisticsActivity;
+import com.example.calendar.Util.KLog;
+import com.example.calendar.Util.TimerUtil;
 import com.example.calendar.application.CustomApplication;
 import com.example.calendar.service.LocationService;
 import com.example.calendar.service.Utils;
@@ -57,12 +64,13 @@ public class MainActivity extends BaseActivity implements
     private String permissionInfo;
     private LocationService locationService;
     public String addrStr;
-    public String setlocation1="中国广东省广州市白云区鹤龙街道南边南街7号";
-    public String setlocation2="中国广东省广州市白云区鹤龙街道南边南街7号";
+    public String setlocation1 = "";
+    public String setlocation2 = "";
     public String location1;
     public String location2;
     public String date1;
     public String date2;
+    public long CalendarTime;
     private int i = 0;
     private int TIME = 1000;
 
@@ -114,7 +122,7 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("MissingPermission")
     @Override
     protected void initView() {
         setStatusBarDarkMode();
@@ -126,10 +134,7 @@ public class MainActivity extends BaseActivity implements
         mCalendarView = findViewById(R.id.calendarView);
         mTextCurrentDay = findViewById(R.id.tv_current_day);
         recyclerView = findViewById(R.id.recyclerView);
-        List<DetailBean> detailBeans = new ArrayList<>();
-
-
-        recyclerView.setAdapter(new DetailAdpter(detailBeans));
+        CalendarQuery();
         mTextMonthDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,15 +180,15 @@ public class MainActivity extends BaseActivity implements
                                 mCalendarView.scrollToNext(false);
                                 break;
                             case 4:
-                                Intent intent=new Intent(MainActivity.this, StatisticsActivity.class);
-                                Bundle bundle=new Bundle();
-                                bundle.putString("addrStr",addrStr);
-                                bundle.putString("location1",setlocation1);
-                                bundle.putString("location2",setlocation2);
-                                bundle.putString("date1",date1);
-                                bundle.putString("date2",date2);
+                                Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("addrStr", addrStr);
+                                bundle.putString("location1", setlocation1);
+                                bundle.putString("location2", setlocation2);
+                                bundle.putString("date1", date1);
+                                bundle.putString("date2", date2);
                                 intent.putExtras(bundle);
-                                startActivity(intent,bundle);
+                                startActivity(intent, bundle);
                         }
                     }
                 };
@@ -267,6 +272,14 @@ public class MainActivity extends BaseActivity implements
         Log.e("MainActivity", "onDestroy");
     }
 
+    //查询日历事件
+    public void CalendarQuery() {
+       List<CalendarEvent>events=CalendarProviderManager.queryAccountEvent(this, CalendarTime);
+      //Log.e("event",events.get(0).getTitle());
+       recyclerView.setAdapter(new DetailAdpter(events));
+    }
+
+
     //关闭定位服务
     protected void onStop() {
         // TODO Auto-generated method stub
@@ -294,22 +307,6 @@ public class MainActivity extends BaseActivity implements
 
         //28560 数据量增长不会影响UI响应速度，请使用这个API替换
         mCalendarView.setSchemeDate(map);
-
-        //可自行测试性能差距
-        //mCalendarView.setSchemeDate(schemes);
-
-//        findViewById(R.id.ll_flyme).setOnClickListener(this);
-//        findViewById(R.id.ll_simple).setOnClickListener(this);
-//        findViewById(R.id.ll_range).setOnClickListener(this);
-//        findViewById(R.id.ll_colorful).setOnClickListener(this);
-//        findViewById(R.id.ll_index).setOnClickListener(this);
-//        findViewById(R.id.ll_tab).setOnClickListener(this);
-//        findViewById(R.id.ll_single).setOnClickListener(this);
-//        findViewById(R.id.ll_multi).setOnClickListener(this);
-//        findViewById(R.id.ll_solar_system).setOnClickListener(this);
-//        findViewById(R.id.ll_progress).setOnClickListener(this);
-//        findViewById(R.id.ll_custom).setOnClickListener(this);
-//        findViewById(R.id.ll_full).setOnClickListener(this);
     }
 
     @Override
@@ -325,70 +322,50 @@ public class MainActivity extends BaseActivity implements
                 mCalendarView.setWeekStarWithSat();
                 break;
             case 3:
-                if (mCalendarView.isSingleSelectMode()) {
-                    mCalendarView.setSelectDefaultMode();
-                } else {
-                    mCalendarView.setSelectSingleMode();
-                }
+                setLocation(1);
                 break;
             case 4:
-//        mCalendarView.setWeekView(MeizuWeekView.class);
-//        mCalendarView.setMonthView(MeiZuMonthView.class);
-//        mCalendarView.setWeekBar(EnglishWeekBar.class);
-                break;
-            case 5:
-                mCalendarView.setAllMode();
-                break;
-            case 6:
-                mCalendarView.setOnlyCurrentMode();
-                break;
-            case 7:
-                mCalendarView.setFixMode();
+                setLocation(2);
                 break;
         }
+    }
+
+    public void setLocation(final int type) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final EditText et = new EditText(this);
+        switch (type) {
+            case 1:
+                builder.setTitle("设置地址一");
+                et.setHint("设置地址一");
+                et.setSingleLine(true);
+                break;
+            case 2:
+                builder.setTitle("设置地址二");
+                et.setHint("设置地址一");
+                et.setSingleLine(true);
+                break;
+        }
+        builder.setView(et);
+        builder.setNegativeButton("取消", null);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (type == 1) {
+                    setlocation1 = et.getText().toString();
+                } else {
+                    setlocation2 = et.getText().toString();
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#FFF50057"));
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#333333"));
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-//        case R.id.ll_flyme:
-//        MeiZuActivity.show(this);
-//        //CalendarActivity.show(this);
-//
-//        break;
-//        case R.id.ll_custom:
-//        CustomActivity.show(this);
-//        break;
-//        case R.id.ll_full:
-//        FullActivity.show(this);
-//        break;
-//        case R.id.ll_range:
-//        RangeActivity.show(this);
-//        break;
-//        case R.id.ll_simple:
-//        SimpleActivity.show(this);
-//        break;
-//        case R.id.ll_colorful:
-//        ColorfulActivity.show(this);
-//        break;
-//        case R.id.ll_index:
-//        IndexActivity.show(this);
-//        break;
-//        case R.id.ll_tab:
-//        ViewPagerActivity.show(this);
-//        break;
-//        case R.id.ll_single:
-//        SingleActivity.show(this);
-//        break;
-//        case R.id.ll_multi:
-//        MultiActivity.show(this);
-//        break;
-//        case R.id.ll_solar_system:
-//        SolarActivity.show(this);
-//        break;
-//        case R.id.ll_progress:
-//        ProgressActivity.show(this);
-//        break;
 
         }
     }
@@ -432,8 +409,8 @@ public class MainActivity extends BaseActivity implements
         Log.e("onDateSelected", "  " + mCalendarView.getSelectedCalendar().getScheme() +
                 "  --  " + mCalendarView.getSelectedCalendar().isCurrentDay());
         Log.e("干支年纪 ： ", " -- " + TrunkBranchAnnals.getTrunkBranchYear(calendar.getLunarCalendar().getYear()));
-
-
+        CalendarTime=calendar.getTimeInMillis();
+        Log.e("dtCalendar ： ", " -- " + CalendarTime);
     }
 
     @Override
@@ -443,7 +420,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onCalendarLongClick(Calendar calendar) {
-        Toast.makeText(this, "长按不选择日期\n" + getCalendarText(calendar), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "长按不选择日期\n" + calendar, Toast.LENGTH_SHORT).show();
     }
 
     private static String getCalendarText(Calendar calendar) {
@@ -556,8 +533,8 @@ public class MainActivity extends BaseActivity implements
                 }
                 logMsg(sb.toString(), tag);
                 addrStr = location.getAddrStr();
-                location1=location.getAddrStr();
-                location2=location.getAddrStr();
+                location1 = location.getAddrStr();
+                location2 = location.getAddrStr();
             }
 
 
@@ -653,12 +630,12 @@ public class MainActivity extends BaseActivity implements
             // handler自带方法实现定时器
             try {
                 handler.postDelayed(this, TIME);
-                System.out.println("do..." + ConvertorTime.secToTime(i++));
-                if (setlocation1.equals(location1)){
-                    date1=ConvertorTime.secToTime(i++);
+                KLog.d("do..." + ConvertorTime.secToTime(i++));
+                if (setlocation1.equals(location1)) {
+                    date1 = ConvertorTime.secToTime(i++);
                 }
-                if (setlocation2.equals(location2)){
-                    date2=ConvertorTime.secToTime(i++);
+                if (setlocation2.equals(location2)) {
+                    date2 = ConvertorTime.secToTime(i++);
                 }
             } catch (Exception e) {
                 // TODO Auto-generated catch block

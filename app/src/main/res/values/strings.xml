@@ -4,14 +4,14 @@
 
     <string name="func_dialog_title">功能支持</string>
 
-    <string name="list_dialog_title">动态更新</string>
+    <string name="list_dialog_title">设置</string>
 
     <string-array name="list_dialog_items">
         <item>周日为周起始</item>
         <item>周一为周起始</item>
         <item>周六为周起始</item>
-        <item>定位统计</item>
-
+        <item>设置地址一</item>
+        <item>设置地址二</item>
     </string-array>
 
     <string-array name="func_dialog_items">

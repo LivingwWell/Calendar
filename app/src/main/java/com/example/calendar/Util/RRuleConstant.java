@@ -3,7 +3,6 @@ package com.example.calendar.Util;
 /**
  * 日历事件重复模式
  * <p>
- * Created by KYLE on 2019/3/3 - 22:17
  * <p>
  * 通过重复模式获取事件组装用的重复规则
  * TIP: 提供几种常用的重复模式类型{@link RRuleConstant},可直接使用,更多模式参考以下解释进行完全自定义
@@ -82,10 +81,7 @@ package com.example.calendar.Util;
  * SA      周六
  * SU      周日
  * -------------------------
- * <p>
- * 了解更多关于RRule的规则请参考
- * <p>
- * https://tools.ietf.org/html/rfc5545
+
  */
 class RRuleConstant {
 
