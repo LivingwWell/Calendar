@@ -606,10 +606,10 @@ public class CalendarProviderManager {
      *
      * @return If failed return null else return List<CalendarEvent>
      */
-    public static List<CalendarEvent> queryAccountEvent(Context context, Long startTime) {
+    public static List<CalendarEvent> queryAccountEvent(Context context, Long Time) {
         checkContextNull(context);
-        if(startTime == null  || startTime == 0 ){
-            startTime = System.currentTimeMillis();
+        if(Time == null  || Time == 0 ){
+            Time = System.currentTimeMillis();
         }
         final String[] EVENT_PROJECTION = new String[]{
                 CalendarContract.Events.CALENDAR_ID,             // 在表中的列索引0
@@ -643,12 +643,14 @@ public class CalendarProviderManager {
         String selection = "((" + CalendarContract.Events.DTSTART + " >= ?)) AND (" + CalendarContract.Events.DTEND + " <= ?)";
         //开始时间  结束时间计算
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
+
+        calendar.setTimeInMillis(Time);
         calendar.set(Calendar.HOUR_OF_DAY,0);
         calendar.set(Calendar.MINUTE,0);
         calendar.set(Calendar.SECOND,0);
         calendar.set(Calendar.MILLISECOND,0);
-        startTime = calendar.getTimeInMillis();
+
+        long startTime = calendar.getTimeInMillis();
         calendar.set(Calendar.DATE,calendar.get(Calendar.DATE)+1);
         long endtime = calendar.getTimeInMillis();
         String[] args = {String.valueOf(startTime), String.valueOf(endtime)};
@@ -740,7 +742,7 @@ public class CalendarProviderManager {
             } while (cursor.moveToNext());
             cursor.close();
         }
-        Log.d(TAG, "queryAccountEvent: result:"+result.size());
+        Log.d(TAG, "queryAccountEvent: result:"+result.size()+calendar.getTimeInMillis());
         //KLog.e("result",result);
         return result;
     }

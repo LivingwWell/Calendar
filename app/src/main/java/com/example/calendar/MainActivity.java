@@ -6,17 +6,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.CalendarContract;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -27,13 +24,10 @@ import android.widget.Toast;
 
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
-import com.baidu.location.Poi;
-import com.baidu.location.PoiRegion;
-import com.example.calendar.Bean.DetailBean;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.calendar.Util.CalendarProviderManager;
 import com.example.calendar.Location.StatisticsActivity;
-import com.example.calendar.Util.KLog;
-import com.example.calendar.Util.TimerUtil;
+import com.example.calendar.Util.SPUtils;
 import com.example.calendar.application.CustomApplication;
 import com.example.calendar.service.LocationService;
 import com.example.calendar.service.Utils;
@@ -69,11 +63,13 @@ public class MainActivity extends BaseActivity implements
     public String setlocation2 = "";
     public String location1;
     public String location2;
-    public String date1;
-    public String date2;
+    public int date1;
+    public int date2;
     public long CalendarTime;
+    List<CalendarEvent> events;
     private int i = 0;
     private int TIME = 1000;
+    DetailAdpter detailAdpter;
 
     @Override
     protected int getLayoutId() {
@@ -187,8 +183,8 @@ public class MainActivity extends BaseActivity implements
                                 bundle.putString("addrStr", addrStr);
                                 bundle.putString("location1", setlocation1);
                                 bundle.putString("location2", setlocation2);
-                                bundle.putString("date1", date1);
-                                bundle.putString("date2", date2);
+                                bundle.putInt("date1", date1);
+                                bundle.putInt("date2", date2);
                                 intent.putExtras(bundle);
                                 startActivity(intent, bundle);
                         }
@@ -241,12 +237,28 @@ public class MainActivity extends BaseActivity implements
                 bundle.putString("addrStr", addrStr);
                 bundle.putString("location1", location1);
                 bundle.putString("location2", location2);
-                bundle.putString("date1", date1);
-                bundle.putString("date2", date2);
+                bundle.putInt("date1", date1);
+                bundle.putInt("date2", date2);
                 startActivity(new Intent(MainActivity.this, AddActivity.class).putExtras(bundle));
             }
         });
     }
+
+    //查询日历事件
+    public void CalendarQuery() {
+        events = CalendarProviderManager.queryAccountEvent(this, CalendarTime);
+        detailAdpter = new DetailAdpter(events);
+        detailAdpter.setOnItemChildClickListener(new BaseQuickAdapter.OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+
+                Toast.makeText(MainActivity.this, "ss", Toast.LENGTH_SHORT).show();
+            }
+        });
+        detailAdpter.notifyDataSetChanged();
+        recyclerView.setAdapter(detailAdpter);
+    }
+
 
     //开启定位服务
     @Override
@@ -272,13 +284,6 @@ public class MainActivity extends BaseActivity implements
         super.onDestroy();
         onStop();
         Log.e("MainActivity", "onDestroy");
-    }
-
-    //查询日历事件
-    public void CalendarQuery() {
-       List<CalendarEvent>events=CalendarProviderManager.queryAccountEvent(this, CalendarTime);
-      //Log.e("event",events.get(0).getTitle());
-       recyclerView.setAdapter(new DetailAdpter(events));
     }
 
 
@@ -400,7 +405,7 @@ public class MainActivity extends BaseActivity implements
         mTextLunar.setText(calendar.getLunar());
         mYear = calendar.getYear();
         if (isClick) {
-            Toast.makeText(this, getCalendarText(calendar), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, getCalendarText(calendar), Toast.LENGTH_SHORT).show();
         }
 //        Log.e("lunar "," --  " + calendar.getLunarCalendar().toString() + "\n" +
 //        "  --  " + calendar.getLunarCalendar().getYear());
@@ -411,8 +416,9 @@ public class MainActivity extends BaseActivity implements
         Log.e("onDateSelected", "  " + mCalendarView.getSelectedCalendar().getScheme() +
                 "  --  " + mCalendarView.getSelectedCalendar().isCurrentDay());
         Log.e("干支年纪 ： ", " -- " + TrunkBranchAnnals.getTrunkBranchYear(calendar.getLunarCalendar().getYear()));
-        CalendarTime=calendar.getTimeInMillis();
-        Log.e("dtCalendar ： ", " -- " + CalendarTime);
+        CalendarTime = calendar.getTimeInMillis();
+        CalendarQuery();
+        Log.e("dtCalendar ： ", " -- " + CalendarTime + "--" + calendar.getTimeInMillis());
     }
 
     @Override
@@ -632,12 +638,14 @@ public class MainActivity extends BaseActivity implements
             // handler自带方法实现定时器
             try {
                 handler.postDelayed(this, TIME);
-                KLog.d("do..." + ConvertorTime.secToTime(i++));
+                //System.out.println("do..." + ConvertorTime.secToTime(i++));
                 if (setlocation1.equals(location1)) {
-                    date1 = ConvertorTime.secToTime(i++);
+                    //date1 = SPUtils.getInstance().getInt(location1);
+                    date1 = i++;
                 }
                 if (setlocation2.equals(location2)) {
-                    date2 = ConvertorTime.secToTime(i++);
+                    date2 = SPUtils.getInstance().getInt(location1);
+                    date2 = i++;
                 }
             } catch (Exception e) {
                 // TODO Auto-generated catch block

@@ -7,7 +7,9 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.example.calendar.ConvertorTime;
 import com.example.calendar.R;
+import com.example.calendar.Util.SPUtils;
 
 public class StatisticsActivity extends Activity {
     @Override
@@ -18,8 +20,8 @@ public class StatisticsActivity extends Activity {
         String address=intent.getStringExtra("addrStr");
         String location1=intent.getStringExtra("location1");
         String location2=intent.getStringExtra("location2");
-        String date1=intent.getStringExtra("date1");
-        String date2=intent.getStringExtra("date2");
+        int date1=intent.getIntExtra("date1",0);
+        int date2=intent.getIntExtra("date2",0);
         TextView addrStr=findViewById(R.id.location);
         TextView tvlocation1=findViewById(R.id.location1);
         TextView tvlocation2=findViewById(R.id.location2);
@@ -37,10 +39,12 @@ public class StatisticsActivity extends Activity {
         }else {
             tvlocation2.setText("常用地点二："+location2);
         }
-
-        tvdate1.setText("累计时长："+date1);
-        tvdate2.setText("累计时长："+date2);
-
-
+        tvdate1.setText("累计时长："+ ConvertorTime.secToTime(date1));
+        tvdate2.setText("累计时长："+ ConvertorTime.secToTime(date2));
+        SPUtils.getInstance().put(location1,date1);
+        SPUtils.getInstance().put(location2,date2);
     }
+
+
+
 }

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Vibrator;
 
 
+import com.example.calendar.Util.Utils;
 import com.example.calendar.service.LocationService;
 
 public class CustomApplication extends Application {
@@ -23,6 +24,7 @@ public class CustomApplication extends Application {
          */
         locationService = new LocationService(getApplicationContext());
         mVibrator =(Vibrator)getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
+        Utils.init(getApplicationContext());
     }
 
 
